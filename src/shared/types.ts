@@ -95,8 +95,6 @@ export const IPC = {
   LOG_WATER: 'water:log',
   SET_MEDICINE_TAKEN: 'medicine:setTaken',
   MEDICINE_REMINDER: 'medicine:reminder',
-  BREAK_DONE: 'break:done',
-  SNOOZE_PAUSE_TOGGLE: 'break:pauseToggle',
   STATUS_CHANGED: 'status:changed',
   SETTINGS_CHANGED: 'settings:changed',
   SHOW_BREAK_OVERLAY: 'overlay:show',

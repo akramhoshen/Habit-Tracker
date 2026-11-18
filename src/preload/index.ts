@@ -9,7 +9,6 @@ const api = {
   logWater: (): Promise<Settings> => ipcRenderer.invoke(IPC.LOG_WATER),
   setMedicineTaken: (id: string, taken: boolean): Promise<Settings> =>
     ipcRenderer.invoke(IPC.SET_MEDICINE_TAKEN, id, taken),
-  breakDone: (): void => ipcRenderer.send(IPC.BREAK_DONE),
   onMedicineReminder: (cb: (payload: MedicineReminderPayload) => void): (() => void) => {
     const listener = (_e: unknown, payload: MedicineReminderPayload): void => cb(payload)
     ipcRenderer.on(IPC.MEDICINE_REMINDER, listener)

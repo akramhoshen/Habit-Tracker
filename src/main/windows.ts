@@ -1,8 +1,20 @@
 import { join } from 'path'
-import { BrowserWindow, screen } from 'electron'
+import { app, BrowserWindow, screen, WebPreferences } from 'electron'
 import { buildAppIcon } from './icon'
 
-const isDev = !!process.env['ELECTRON_RENDERER_URL']
+// Only trust the dev-server env var in an unpackaged build, so a stray/malicious
+// environment variable can never point the installed app at a remote page.
+const isDev = !app.isPackaged && !!process.env['ELECTRON_RENDERER_URL']
+
+// Renderer isolation: no Node access, sandboxed, preload is the only bridge.
+const secureWebPreferences: WebPreferences = {
+  preload: join(__dirname, '../preload/index.js'),
+  sandbox: true,
+  contextIsolation: true,
+  nodeIntegration: false,
+  webSecurity: true,
+  allowRunningInsecureContent: false
+}
 
 function rendererUrl(page: 'index' | 'overlay'): string {
   if (isDev) {
@@ -29,10 +41,7 @@ export function createDashboardWindow(): BrowserWindow {
     autoHideMenuBar: true,
     backgroundColor: '#12121c',
     icon: buildAppIcon(),
-    webPreferences: {
-      preload: join(__dirname, '../preload/index.js'),
-      sandbox: false
-    }
+    webPreferences: secureWebPreferences
   })
 
   dashboardWindow.on('ready-to-show', () => dashboardWindow?.show())
@@ -80,10 +89,7 @@ export function createOverlayWindows(): BrowserWindow[] {
       maximizable: false,
       backgroundColor: '#0b0b14',
       show: false,
-      webPreferences: {
-        preload: join(__dirname, '../preload/index.js'),
-        sandbox: false
-      }
+      webPreferences: secureWebPreferences
     })
 
     win.setAlwaysOnTop(true, 'screen-saver')
