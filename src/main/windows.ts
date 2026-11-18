@@ -71,6 +71,13 @@ export function getDashboardWindow(): BrowserWindow | null {
   return dashboardWindow
 }
 
+/** Send to the dashboard only if it still exists (it is destroyed while the app quits). */
+export function sendToDashboard(channel: string, ...args: unknown[]): void {
+  const win = dashboardWindow
+  if (!win || win.isDestroyed() || win.webContents.isDestroyed()) return
+  win.webContents.send(channel, ...args)
+}
+
 let overlayWindows: BrowserWindow[] = []
 
 export function createOverlayWindows(): BrowserWindow[] {

@@ -13,6 +13,7 @@ import { sanitizeSettingsPatch, isValidMedicineId } from './validate'
 import {
   createDashboardWindow,
   getDashboardWindow,
+  sendToDashboard,
   createOverlayWindows,
   closeOverlayWindows
 } from './windows'
@@ -65,6 +66,19 @@ app.on('web-contents-created', (_e, contents) => {
 
 let tray: Tray | null = null
 let breakActiveTimeout: NodeJS.Timeout | null = null
+let statusTimer: NodeJS.Timeout | null = null
+let isQuitting = false
+
+// Stop every timer before the app exits, so nothing fires into destroyed windows.
+function stopBackgroundWork(): void {
+  isQuitting = true
+  if (statusTimer) clearInterval(statusTimer)
+  statusTimer = null
+  if (breakActiveTimeout) clearTimeout(breakActiveTimeout)
+  breakActiveTimeout = null
+  scheduler.stop()
+  medicineReminder.stop()
+}
 
 const scheduler = new Scheduler({
   onBreak: triggerBreak,
@@ -81,14 +95,15 @@ function pickRandom(list: string[]): string {
 
 function broadcastStatus(): void {
   const status = scheduler.getStatus(getSettings())
-  getDashboardWindow()?.webContents.send(IPC.STATUS_CHANGED, status)
+  sendToDashboard(IPC.STATUS_CHANGED, status)
 }
 
 function broadcastSettings(settings: Settings): void {
-  getDashboardWindow()?.webContents.send(IPC.SETTINGS_CHANGED, settings)
+  sendToDashboard(IPC.SETTINGS_CHANGED, settings)
 }
 
 function triggerBreak(): void {
+  if (isQuitting) return
   const settings = getSettings()
   if (!settings.breakEnabled) return
 
@@ -96,6 +111,7 @@ function triggerBreak(): void {
   const windows = createOverlayWindows()
   for (const win of windows) {
     win.webContents.once('did-finish-load', () => {
+      if (win.isDestroyed()) return
       win.webContents.send(IPC.SHOW_BREAK_OVERLAY, {
         message,
         durationSeconds: settings.breakDurationSeconds
@@ -120,6 +136,7 @@ function finishBreak(): void {
 }
 
 function triggerWater(): void {
+  if (isQuitting) return
   const settings = getSettings()
   if (!settings.waterEnabled) return
 
@@ -131,10 +148,11 @@ function triggerWater(): void {
       icon: buildAppIcon()
     }).show()
   }
-  getDashboardWindow()?.webContents.send(IPC.WATER_REMINDER, message)
+  sendToDashboard(IPC.WATER_REMINDER, message)
 }
 
 function triggerMedicine(medicine: Medicine): void {
+  if (isQuitting) return
   const label = medicine.dose ? `${medicine.name} — ${medicine.dose}` : medicine.name
   const payload: MedicineReminderPayload = {
     id: medicine.id,
@@ -155,7 +173,7 @@ function triggerMedicine(medicine: Medicine): void {
     n.on('close', () => liveNotifications.delete(n))
     n.show()
   }
-  getDashboardWindow()?.webContents.send(IPC.MEDICINE_REMINDER, payload)
+  sendToDashboard(IPC.MEDICINE_REMINDER, payload)
 }
 
 // Only the dashboard window may talk to the main process; the lock overlay only
@@ -227,7 +245,13 @@ function createTray(): void {
         click: () => broadcastSettings(incrementWater())
       },
       { type: 'separator' },
-      { label: 'Quit Habit Tracker', click: () => app.exit(0) }
+      {
+        label: 'Quit Habit Tracker',
+        click: () => {
+          stopBackgroundWork()
+          app.exit(0)
+        }
+      }
     ])
     tray?.setContextMenu(menu)
   }
@@ -247,7 +271,7 @@ app.whenReady().then(() => {
   applyLoginItem(getSettings())
   scheduler.applySettings(getSettings())
   medicineReminder.start()
-  setInterval(broadcastStatus, 1000)
+  statusTimer = setInterval(broadcastStatus, 1000)
 
   app.on('activate', () => createDashboardWindow())
 })
@@ -258,4 +282,7 @@ app.on('window-all-closed', () => {
   // The app lives in the tray; only the tray's Quit action should end it.
 })
 
-app.on('before-quit', () => closeOverlayWindows())
+app.on('before-quit', () => {
+  stopBackgroundWork()
+  closeOverlayWindows()
+})

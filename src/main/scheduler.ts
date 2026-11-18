@@ -21,6 +21,18 @@ export class Scheduler {
     this.setupWater(settings)
   }
 
+  /** Stop all timers (used on quit so nothing fires into destroyed windows). */
+  stop(): void {
+    if (this.breakTimer) clearInterval(this.breakTimer)
+    if (this.waterTimer) clearInterval(this.waterTimer)
+    this.breakTimer = null
+    this.waterTimer = null
+    this.nextBreakAt = 0
+    this.nextWaterAt = 0
+    this.breakConfig = ''
+    this.waterConfig = ''
+  }
+
   getStatus(settings: Settings): TimerStatus {
     return {
       breakEnabled: settings.breakEnabled,

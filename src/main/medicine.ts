@@ -40,6 +40,11 @@ export class MedicineReminder {
     this.check()
   }
 
+  stop(): void {
+    if (this.timer) clearInterval(this.timer)
+    this.timer = null
+  }
+
   /** Call after settings change so a new/edited dose is evaluated immediately. */
   recheck(): void {
     this.check()
