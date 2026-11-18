@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "Personal Habit Tracker - hourly break reminders, water reminders, and habit stats",
   "main": "./out/main/index.js",
-  "author": "Sajid Suaib",
+  "author": "Akram Hoshen",
   "private": true,
   "scripts": {
     "dev": "electron-vite dev",
@@ -29,7 +29,7 @@
     "vite": "^8.3.8"
   },
   "build": {
-    "appId": "com.sajid.habittracker",
+    "appId": "com.akramhoshen.habittracker",
     "productName": "Habit Tracker",
     "files": [
       "out/**/*"
@@ -45,6 +45,7 @@
       "enableNodeCliInspectArguments": false,
       "enableEmbeddedAsarIntegrityValidation": true,
       "onlyLoadAppFromAsar": true
-    }
+    },
+    "copyright": "Copyright © 2026 Akram Hoshen"
   }
 }

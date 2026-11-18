@@ -93,6 +93,7 @@ export const IPC = {
   UPDATE_SETTINGS: 'settings:update',
   GET_STATUS: 'status:get',
   LOG_WATER: 'water:log',
+  OPEN_CONTACT: 'app:openContact',
   SET_MEDICINE_TAKEN: 'medicine:setTaken',
   MEDICINE_REMINDER: 'medicine:reminder',
   STATUS_CHANGED: 'status:changed',

@@ -7,6 +7,7 @@ const api = {
     ipcRenderer.invoke(IPC.UPDATE_SETTINGS, partial),
   getStatus: (): Promise<TimerStatus> => ipcRenderer.invoke(IPC.GET_STATUS),
   logWater: (): Promise<Settings> => ipcRenderer.invoke(IPC.LOG_WATER),
+  openContact: (): Promise<void> => ipcRenderer.invoke(IPC.OPEN_CONTACT),
   setMedicineTaken: (id: string, taken: boolean): Promise<Settings> =>
     ipcRenderer.invoke(IPC.SET_MEDICINE_TAKEN, id, taken),
   onMedicineReminder: (cb: (payload: MedicineReminderPayload) => void): (() => void) => {

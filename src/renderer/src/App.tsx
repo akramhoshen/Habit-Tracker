@@ -3,6 +3,7 @@ import { Medicine, Settings, TimerStatus } from '../../shared/types'
 import { Card } from './components/Card'
 import { Toggle } from './components/Toggle'
 import { Logo } from './components/Logo'
+import { COPYRIGHT_TEXT, CONTACT_EMAIL } from '../../shared/about'
 import { formatCountdown } from './utils/format'
 import './styles/global.css'
 import './styles/app.css'
@@ -312,6 +313,12 @@ function App(): JSX.Element {
       </div>
 
       <p className="footer-note">Minimized to the tray &mdash; the app keeps running in the background.</p>
+      <p className="footer-note footer-note--tight">
+        {COPYRIGHT_TEXT} &middot; Contact:{' '}
+        <button className="link-btn" onClick={() => void window.api.openContact()}>
+          {CONTACT_EMAIL}
+        </button>
+      </p>
 
       {toast && <div className="toast">{toast}</div>}
     </div>

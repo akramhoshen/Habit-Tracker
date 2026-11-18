@@ -1,4 +1,14 @@
-import { app, Tray, Menu, ipcMain, Notification, session, IpcMainInvokeEvent } from 'electron'
+import {
+  app,
+  Tray,
+  Menu,
+  ipcMain,
+  Notification,
+  session,
+  shell,
+  IpcMainInvokeEvent
+} from 'electron'
+import { CONTACT_EMAIL } from '../shared/about'
 import { sanitizeSettingsPatch, isValidMedicineId } from './validate'
 import {
   createDashboardWindow,
@@ -168,6 +178,9 @@ function registerIpc(): void {
   })
 
   handle(IPC.GET_STATUS, () => scheduler.getStatus(getSettings()))
+
+  // Opens the mail client to the fixed contact address (no renderer-supplied URL).
+  handle(IPC.OPEN_CONTACT, () => shell.openExternal(`mailto:${CONTACT_EMAIL}`))
 
   handle(IPC.LOG_WATER, () => {
     const next = incrementWater()

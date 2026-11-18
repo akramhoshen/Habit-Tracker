@@ -395,6 +395,25 @@ textarea.messages:focus {
   align-self: flex-start;
 }
 
+.footer-note--tight {
+  margin-top: 4px;
+  margin-bottom: 0;
+}
+
+.link-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: inherit;
+  color: var(--teal);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.link-btn:hover {
+  color: var(--violet);
+}
+
 .footer-note {
   text-align: center;
   font-size: 11px;
