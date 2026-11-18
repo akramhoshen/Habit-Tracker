@@ -46,6 +46,7 @@
       "enableEmbeddedAsarIntegrityValidation": true,
       "onlyLoadAppFromAsar": true
     },
-    "copyright": "Copyright © 2026 Akram Hoshen"
+    "copyright": "Copyright © 2026 Akram Hoshen",
+    "electronDist": "node_modules/electron/dist"
   }
 }
