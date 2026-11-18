@@ -41,6 +41,11 @@
   flex-shrink: 0;
 }
 
+.header__right {
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
 .header__title {
   font-size: 22px;
   font-weight: 700;

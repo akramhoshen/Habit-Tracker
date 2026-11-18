@@ -8,7 +8,7 @@ import {
   shell,
   IpcMainInvokeEvent
 } from 'electron'
-import { CONTACT_EMAIL } from '../shared/about'
+import { APP_ID, CONTACT_EMAIL } from '../shared/about'
 import { sanitizeSettingsPatch, isValidMedicineId } from './validate'
 import {
   createDashboardWindow,
@@ -33,6 +33,20 @@ import {
   MedicineReminderPayload,
   Settings
 } from '../shared/types'
+
+// Windows names notifications after the AppUserModelID. Without this they show up
+// as "electron.app.Habit Tracker". Must match the installer's appId (the Start
+// Menu shortcut), so only set it for the installed app.
+if (app.isPackaged) app.setAppUserModelId(APP_ID)
+
+const LOGIN_ARG = '--hidden'
+const startedHidden = process.argv.includes(LOGIN_ARG)
+
+// Start with Windows (minimized to the tray). Skipped in dev so we never register electron.exe.
+function applyLoginItem(settings: Settings): void {
+  if (!app.isPackaged) return
+  app.setLoginItemSettings({ openAtLogin: settings.startAtLogin, args: [LOGIN_ARG] })
+}
 
 const gotLock = app.requestSingleInstanceLock()
 if (!gotLock) {
@@ -164,6 +178,7 @@ function registerIpc(): void {
 
   handle(IPC.UPDATE_SETTINGS, (partial: unknown) => {
     const next = updateSettings(sanitizeSettingsPatch(partial))
+    applyLoginItem(next)
     scheduler.applySettings(next)
     medicineReminder.recheck()
     broadcastSettings(next)
@@ -228,7 +243,8 @@ app.whenReady().then(() => {
   session.defaultSession.setPermissionCheckHandler(() => false)
   registerIpc()
   createTray()
-  createDashboardWindow()
+  createDashboardWindow(!startedHidden)
+  applyLoginItem(getSettings())
   scheduler.applySettings(getSettings())
   medicineReminder.start()
   setInterval(broadcastStatus, 1000)

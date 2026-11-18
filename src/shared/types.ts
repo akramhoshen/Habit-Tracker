@@ -24,6 +24,7 @@ export interface Settings {
   waterMessages: string[]
   medicineEnabled: boolean
   medicines: Medicine[]
+  startAtLogin: boolean
   stats: DailyStats
 }
 
@@ -64,6 +65,7 @@ export function defaultSettings(): Settings {
     waterMessages: DEFAULT_WATER_MESSAGES,
     medicineEnabled: true,
     medicines: [],
+    startAtLogin: true,
     stats: emptyStats()
   }
 }

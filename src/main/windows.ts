@@ -25,10 +25,13 @@ function rendererUrl(page: 'index' | 'overlay'): string {
 
 let dashboardWindow: BrowserWindow | null = null
 
-export function createDashboardWindow(): BrowserWindow {
+/** `showOnReady=false` creates the window hidden (used for the silent start at login). */
+export function createDashboardWindow(showOnReady = true): BrowserWindow {
   if (dashboardWindow && !dashboardWindow.isDestroyed()) {
-    dashboardWindow.show()
-    dashboardWindow.focus()
+    if (showOnReady) {
+      dashboardWindow.show()
+      dashboardWindow.focus()
+    }
     return dashboardWindow
   }
 
@@ -44,7 +47,9 @@ export function createDashboardWindow(): BrowserWindow {
     webPreferences: secureWebPreferences
   })
 
-  dashboardWindow.on('ready-to-show', () => dashboardWindow?.show())
+  dashboardWindow.on('ready-to-show', () => {
+    if (showOnReady) dashboardWindow?.show()
+  })
 
   dashboardWindow.on('close', (e) => {
     // Keep the app alive in the tray instead of fully quitting on window close

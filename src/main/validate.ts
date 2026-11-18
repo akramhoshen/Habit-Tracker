@@ -72,6 +72,7 @@ export function sanitizeSettingsPatch(input: unknown): Partial<Settings> {
   set('waterMessages', messages(src.waterMessages))
   set('medicineEnabled', bool(src.medicineEnabled))
   set('medicines', medicines(src.medicines))
+  set('startAtLogin', bool(src.startAtLogin))
   return patch
 }
 

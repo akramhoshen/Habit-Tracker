@@ -103,6 +103,13 @@ function App(): JSX.Element {
           </h1>
           <p className="header__subtitle">Stay sharp. Stay hydrated. Stand up every hour.</p>
         </div>
+        <div className="header__right">
+          <Toggle
+            label="Start with Windows"
+            checked={settings.startAtLogin}
+            onChange={(v) => patch({ startAtLogin: v })}
+          />
+        </div>
       </header>
 
       <div className="stat-row">
