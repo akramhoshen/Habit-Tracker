@@ -1,0 +1,96 @@
+.overlay {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(ellipse at center, #15152a 0%, #0b0b14 70%);
+  overflow: hidden;
+}
+
+.overlay__blob {
+  position: absolute;
+  width: 440px;
+  height: 440px;
+  border-radius: 50%;
+  filter: blur(90px);
+  opacity: 0.55;
+  animation: float 9s ease-in-out infinite;
+}
+
+.overlay__blob--a {
+  background: var(--violet);
+  top: -120px;
+  left: -100px;
+}
+
+.overlay__blob--b {
+  background: var(--teal);
+  bottom: -140px;
+  right: -100px;
+  animation-delay: 2.5s;
+}
+
+.overlay__content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 18px;
+  max-width: 720px;
+  padding: 0 40px;
+  animation: fadeUp 0.5s ease both;
+}
+
+.overlay__eyebrow {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  color: var(--teal);
+}
+
+.overlay__message {
+  font-size: 34px;
+  font-weight: 700;
+  margin: 0;
+  line-height: 1.3;
+  background: linear-gradient(90deg, var(--violet), var(--teal));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.overlay__timer {
+  font-family: var(--font-mono);
+  font-size: 78px;
+  font-weight: 600;
+  color: var(--text-0);
+  letter-spacing: 0.04em;
+  padding: 10px 36px;
+  border-radius: 24px;
+  border: 1px solid var(--card-border);
+  background: rgba(255, 255, 255, 0.03);
+  animation: pulseGlow 2.4s ease-in-out infinite;
+}
+
+.overlay__progress {
+  width: 340px;
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.overlay__progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--violet), var(--teal));
+  transition: width 1s linear;
+}
+
+.overlay__hint {
+  font-size: 14px;
+  color: var(--text-1);
+}
